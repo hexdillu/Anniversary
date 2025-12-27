@@ -120,31 +120,24 @@
 
       .confetti {
         position: fixed;
-        top: 0;
+        bottom: 0;
         left: 0;
         width: 100%;
         height: 100%;
         pointer-events: none;
         overflow: hidden;
+        z-index: 999;
       }
 
-      .confetti span {
+      .confetti-piece {
         position: absolute;
+        bottom: -10px;
         width: 8px;
         height: 14px;
-        background: #ff4d88;
-        opacity: 0.8;
-        animation: fall 3s linear forwards;
+        border-radius: 2px;
+        opacity: 0.9;
       }
 
-      @keyframes fall {
-        from {
-          transform: translateY(-20px) rotate(0deg);
-        }
-        to {
-          transform: translateY(110vh) rotate(360deg);
-        }
-      }
     </style>
   </head>
 
@@ -226,24 +219,52 @@
         }, 600);
       }
 
-      function launchConfetti() {
-        const confettiContainer = document.createElement("div");
-        confettiContainer.classList.add("confetti");
-        document.body.appendChild(confettiContainer);
+     function launchConfetti() {
+  const container = document.createElement("div");
+  container.className = "confetti";
+  document.body.appendChild(container);
 
-        for (let i = 0; i < 80; i++) {
-          const piece = document.createElement("span");
-          piece.style.left = Math.random() * 100 + "vw";
-          piece.style.animationDelay = Math.random() * 0.5 + "s";
-          piece.style.background = Math.random() > 0.5 ? "#ff4d88" : "#ffd1e3";
-          confettiContainer.appendChild(piece);
+  const colors = ["#ff4d88", "#ffd1e3", "#ff85b3", "#ffffff"];
+
+  for (let i = 0; i < 90; i++) {
+    const piece = document.createElement("div");
+    piece.className = "confetti-piece";
+
+    const size = Math.random() * 6 + 6;
+    piece.style.width = size + "px";
+    piece.style.height = size * 1.4 + "px";
+
+    piece.style.left = Math.random() * 100 + "vw";
+    piece.style.background =
+      colors[Math.floor(Math.random() * colors.length)];
+
+    container.appendChild(piece);
+
+    const animation = piece.animate(
+      [
+        { transform: "translateY(0) rotate(0deg)", opacity: 1 },
+        {
+          transform:
+            `translateY(-${Math.random() * 60 + 60}vh)
+             translateX(${Math.random() * 60 - 30}vw)
+             rotate(${Math.random() * 720}deg)`,
+          opacity: 0
         }
-
-        setTimeout(() => {
-          confettiContainer.remove();
-        }, 3000);
+      ],
+      {
+        duration: Math.random() * 1200 + 1800,
+        easing: "cubic-bezier(.17,.67,.45,1)",
+        delay: Math.random() * 200
       }
+    );
+
+    animation.onfinish = () => piece.remove();
+  }
+
+  setTimeout(() => container.remove(), 3000);
+}
     </script>
   </body>
 </html>
+
 
